@@ -30,21 +30,88 @@
 #include <opencog/atoms/core/NumberNode.h>
 #include <moses/comboreduct/combo/combo.h>
 #include <moses/moses/moses/types.h>
-#include <moses/comboreduct/table/table.h>
-#include <moses/comboreduct/table/table_io.h>
+#include <moses/comboreduct/converter/combo_atomese.h>
+
+#include <opencog/util/Logger.h>
 
 using namespace std;
 using namespace opencog;
 using namespace moses;
+using namespace combo;
 
-class atomese_logicUTest : public CxxTest::TestSuite
+class atomese_logicalUTest : public CxxTest::TestSuite
 {
+
 public:
-	void test_atomese_logicUTest(void) {
-        combo::combo_tree tr = combo::str2combo_tree("and($1 $2 or($3 $4))", {});
-        //behavioral_score operator()(tr) const
-        behavioral_score t=logical_bscore(tr);
-        std::cout<<t;
-        TS_ASSERT_EQUALS(1,1);
+    atomese_logicalUTest();
+    ~atomese_logicalUTest();
+    void test_combo_logicalUTest();
+    void test_atomese_logicalUTest();
+
 
 };
+
+atomese_logicalUTest::~atomese_logicalUTest()
+
+{
+
+    logger().set_level(Logger::DEBUG);
+    logger().set_print_to_stdout_flag(true);
+
+}
+
+
+atomese_logicalUTest:: atomese_logicalUTest(){
+    // Erase the log file if no assertions failed.
+    if (!CxxTest::TestTracker::tracker().suiteFailed())
+        std::remove(logger().get_filename().c_str());
+}
+
+void atomese_logicalUTest:: test_combo_logicalUTest() {
+
+    combo::combo_tree tr = combo::str2combo_tree("and($1 $2 or($3 $4))", {});
+    type_tree tt = infer_type_tree(tr);
+    combo::arity_t arity = type_tree_arity(tt);
+    logical_bscore bscore(tr,arity);
+    //std::cout << bscore;
+
+    behavioral_score bsc = bscore.best_possible_bscore(),
+            expected_bsc = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    vector<float > v = bsc;
+    std::copy(v.begin(),v.end(),std::ostream_iterator<int>(std::cout, " " ));
+    //scored_combo_tree bct(tr);
+    //std::stringstream bscore;
+    //oss<<bct;
+    //std::cout<< bscore;
+    //behave_cscore& _cscorer;
+
+
+
+    TS_ASSERT_EQUALS(bsc, expected_bsc);
+
+}
+
+void atomese_logicalUTest:: test_atomese_logicalUTest() {
+
+    combo::combo_tree tr = combo::str2combo_tree("and($1 $2 or($3 $4))", {});
+    type_tree tt = infer_type_tree(tr);
+    combo::arity_t arity = type_tree_arity(tt);
+    const Handle program = combo::atomese_combo(tr);
+    logical_bscore bscore(program,arity);
+    //std::cout << bscore;
+
+    behavioral_score bsc = bscore.best_possible_bscore(),
+            expected_bsc = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    vector<float > v = bsc;
+    std::copy(v.begin(),v.end(),std::ostream_iterator<int>(std::cout, " " ));
+    //scored_combo_tree bct(tr);
+    //std::stringstream bscore;
+    //oss<<bct;
+    //std::cout<< bscore;
+    //behave_cscore& _cscorer;
+
+
+
+    TS_ASSERT_EQUALS(bsc, expected_bsc);
+
+}
