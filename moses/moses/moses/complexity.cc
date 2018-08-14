@@ -23,6 +23,7 @@
  */
 #include <opencog/util/exceptions.h>
 #include <moses/comboreduct/combo/combo.h>
+#include <opencog/atoms/core/NumberNode.h>
 
 #include "complexity.h"
 
@@ -117,6 +118,34 @@ complexity_t tree_complexity(const combo_tree& tr,
     if (it == tr.end()) return 0;
 
     return tree_complexity(tr.begin(), stopper);
+}
+
+complexity_t atomese_complexity(const Handle &handle,
+                                bool (*stopper)(const Handle&))
+{
+	if (stopper && stopper(handle)) return 0;
+
+	Type t = handle->get_type();
+
+	if (SCHEMA_NODE == t || PREDICATE_NODE == t || NUMBER_NODE == t){
+		return 1;
+	}
+	if (TIMES_LINK == t){
+		for (Handle h : handle->getOutgoingSet()){
+			if (h->get_type() == NUMBER_NODE && NumberNodeCast(h)->get_value() == 0)
+				return 0;
+		}
+	}
+	if (nameserver().isA(t, LINK)){
+		int c = int(t==DIVIDE_LINK
+		            ||t==RANDOM_CHOICE_LINK
+		            ||t==RANDOM_NUMBER_LINK);
+		for (Handle h : handle->getOutgoingSet()){
+			c += atomese_complexity(h, stopper);
+		}
+		return c;
+	}
+	return 0;
 }
 
 } // ~namespace moses
