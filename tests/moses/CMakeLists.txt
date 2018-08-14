@@ -48,6 +48,13 @@ TARGET_LINK_LIBRARIES(scoringUTest
 	${COGUTIL_LIBRARY}
 )
 
+ADD_CXXTEST(atomese_logicalUTest)
+TARGET_LINK_LIBRARIES(atomese_logicalUTest
+        moses
+        comboreduct
+        ${COGUTIL_LIBRARY}
+)
+
 ADD_CXXTEST(metapopulationUTest)
 TARGET_LINK_LIBRARIES(metapopulationUTest
 	moses
