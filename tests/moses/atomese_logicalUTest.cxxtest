@@ -1,0 +1,117 @@
+/** completeTruthTableUTest.cxxtest ---
+ *
+ * Copyright (C) 2018 OpenCog Foundation
+ *
+ * Author: Bitseat Tadesse
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License v3 as
+ * published by the Free Software Foundation and including the exceptions
+ * at http://opencog.org/wiki/Licenses
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program; if not, write to:
+ * Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+
+#include <opencog/atoms/base/Handle.h>
+#include <opencog/atoms/base/Link.h>
+#include <opencog/atoms/base/Node.h>
+#include <opencog/atoms/base/atom_types.h>
+#include <moses/moses/scoring/bscores.h>
+#include <moses/moses/scoring/behave_cscore.h>
+#include <opencog/atoms/core/NumberNode.h>
+#include <moses/comboreduct/combo/combo.h>
+#include <moses/moses/moses/types.h>
+#include <moses/comboreduct/converter/combo_atomese.h>
+
+#include <opencog/util/Logger.h>
+
+using namespace std;
+using namespace opencog;
+using namespace moses;
+using namespace combo;
+
+class atomese_logicalUTest : public CxxTest::TestSuite
+{
+
+public:
+    atomese_logicalUTest();
+    ~atomese_logicalUTest();
+    void test_combo_logicalUTest();
+    void test_atomese_logicalUTest();
+
+
+};
+
+atomese_logicalUTest::~atomese_logicalUTest()
+
+{
+
+    logger().set_level(Logger::DEBUG);
+    logger().set_print_to_stdout_flag(true);
+
+}
+
+
+atomese_logicalUTest:: atomese_logicalUTest(){
+    // Erase the log file if no assertions failed.
+    if (!CxxTest::TestTracker::tracker().suiteFailed())
+        std::remove(logger().get_filename().c_str());
+}
+
+void atomese_logicalUTest:: test_combo_logicalUTest() {
+
+    combo::combo_tree tr = combo::str2combo_tree("and($1 $2 or($3 $4))", {});
+    type_tree tt = infer_type_tree(tr);
+    combo::arity_t arity = type_tree_arity(tt);
+    logical_bscore bscore(tr,arity);
+    //std::cout << bscore;
+
+    behavioral_score bsc = bscore.best_possible_bscore(),
+            expected_bsc = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    vector<float > v = bsc;
+    std::copy(v.begin(),v.end(),std::ostream_iterator<int>(std::cout, " " ));
+    //scored_combo_tree bct(tr);
+    //std::stringstream bscore;
+    //oss<<bct;
+    //std::cout<< bscore;
+    //behave_cscore& _cscorer;
+
+
+
+    TS_ASSERT_EQUALS(bsc, expected_bsc);
+
+}
+
+void atomese_logicalUTest:: test_atomese_logicalUTest() {
+
+    combo::combo_tree tr = combo::str2combo_tree("and($1 $2 or($3 $4))", {});
+    type_tree tt = infer_type_tree(tr);
+    combo::arity_t arity = type_tree_arity(tt);
+    const Handle program = combo::atomese_combo(tr);
+    logical_bscore bscore(program,arity);
+    //std::cout << bscore;
+
+    behavioral_score bsc = bscore.best_possible_bscore(),
+            expected_bsc = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    vector<float > v = bsc;
+    std::copy(v.begin(),v.end(),std::ostream_iterator<int>(std::cout, " " ));
+    //scored_combo_tree bct(tr);
+    //std::stringstream bscore;
+    //oss<<bct;
+    //std::cout<< bscore;
+    //behave_cscore& _cscorer;
+
+
+
+    TS_ASSERT_EQUALS(bsc, expected_bsc);
+
+}
