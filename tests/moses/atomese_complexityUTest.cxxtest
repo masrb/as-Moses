@@ -69,7 +69,7 @@ void atomese_complexityUTest::test_atomese_complexity()
 
 
     std::cout << "handle " << handle->to_string() << std::endl;
-	Handle atomese_complexity(handle);
+	complexity_t atomese_complexity(handle);
 	std::cout << "result " << atomese_complexity << std::endl;
     //complexity_t expected=1.0;
 
