@@ -13,12 +13,7 @@ class atomese_complexityUTest : public CxxTest::TestSuite {
 private:
 	AtomSpace *as;
 	SchemeEval *eval;
-	//const string load_tableUTest_dir =
-	//	string(PROJECT_SOURCE_DIR) + "/tests/atomese/representation/";
-	//const string tableUTest_dir =
-	//	string(PROJECT_SOURCE_DIR) + "/tests/comboreduct/table/";
 
-	//string load_from_path(const string& filename);
 
 public:
 	atomese_complexityUTest();
@@ -54,16 +49,10 @@ atomese_complexityUTest::~atomese_complexityUTest()
 		std::remove(logger().get_filename().c_str());
 }
 
-// test separate input and output representation of a real data.
+
 void atomese_complexityUTest::test_atomese_complexity()
 {
      const Handle &handle = eval->eval_h(
-      	  // "(cog-execute!"
-      	 //  "   (ExecutionOutputLink"
-      	  // "      (DefinedSchemaNode \"x+y*10\")"
-      	   //"      (ListLink"
-      	   //"         (NumberNode 2)"
-      	   //"         (NumberNode 4))))"
 
       	"(ExecutionOutputLink"
            "(DefinedSchemaNode \"the answer\")"
@@ -71,6 +60,12 @@ void atomese_complexityUTest::test_atomese_complexity()
                " (NumberNode 2)"
                " (NumberNode 4)))"
      );
+     // "(cog-execute!"
+           	 //  "   (ExecutionOutputLink"
+           	  // "      (DefinedSchemaNode \"x+y*10\")"
+           	   //"      (ListLink"
+           	   //"         (NumberNode 2)"
+           	   //"         (NumberNode 4))))"
 
 
     std::cout << "handle " << handle->to_string() << std::endl;
