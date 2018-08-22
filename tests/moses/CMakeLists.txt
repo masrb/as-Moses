@@ -55,6 +55,23 @@ TARGET_LINK_LIBRARIES(atomese_logicalUTest
         ${COGUTIL_LIBRARY}
 )
 
+ADD_CXXTEST(atomese_basedscorerUTest)
+TARGET_LINK_LIBRARIES(atomese_basedscorerUTest
+		moses
+		comboreduct
+		${COGUTIL_LIBRARY}
+		)
+
+
+IF (HAVE_GUILE)
+	ADD_CXXTEST(atomese_complexityUTest)
+	TARGET_LINK_LIBRARIES(atomese_complexityUTest
+			atomese
+			${ATOMSPACE_LIBRARIES}
+			${GUILE_LIBRARIES}
+			)
+ENDIF (HAVE_GUILE)
+
 ADD_CXXTEST(metapopulationUTest)
 TARGET_LINK_LIBRARIES(metapopulationUTest
 	moses

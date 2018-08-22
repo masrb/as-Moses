@@ -1,0 +1,83 @@
+#include <opencog/guile/SchemeEval.h>
+#include <opencog/atomspace/AtomSpace.h>
+#include <opencog/atoms/execution/Instantiator.h>
+#include <opencog/util/Logger.h>
+#include <moses/moses/moses/complexity.h>
+#include <moses/moses/moses/types.h>
+
+using namespace opencog;
+using namespace std;
+using namespace moses;
+
+class atomese_complexityUTest : public CxxTest::TestSuite {
+private:
+	AtomSpace *as;
+	SchemeEval *eval;
+	//const string load_tableUTest_dir =
+	//	string(PROJECT_SOURCE_DIR) + "/tests/atomese/representation/";
+	//const string tableUTest_dir =
+	//	string(PROJECT_SOURCE_DIR) + "/tests/comboreduct/table/";
+
+	//string load_from_path(const string& filename);
+
+public:
+	atomese_complexityUTest();
+
+	~atomese_complexityUTest();
+
+	void test_atomese_complexity();
+
+
+};
+
+
+
+atomese_complexityUTest::atomese_complexityUTest()
+{
+	logger().set_level(Logger::DEBUG);
+	logger().set_print_to_stdout_flag(true);
+
+	as = new AtomSpace();
+	eval = new SchemeEval(as);
+	eval->eval("(add-to-load-path \"" PROJECT_SOURCE_DIR "\")");
+	eval->eval("(use-modules (opencog exec))");
+	//load_from_path(load_tableUTest_dir + "real_data_result.scm");
+	//load_from_path(load_tableUTest_dir + "boolean_data_result.scm");
+}
+
+atomese_complexityUTest::~atomese_complexityUTest()
+{
+	delete eval;
+	delete as;
+	// Erase the log file if no assertions failed.
+	if (!CxxTest::TestTracker::tracker().suiteFailed())
+		std::remove(logger().get_filename().c_str());
+}
+
+// test separate input and output representation of a real data.
+void atomese_complexityUTest::test_atomese_complexity()
+{
+     const Handle &handle = eval->eval_h(
+      	  // "(cog-execute!"
+      	 //  "   (ExecutionOutputLink"
+      	  // "      (DefinedSchemaNode \"x+y*10\")"
+      	   //"      (ListLink"
+      	   //"         (NumberNode 2)"
+      	   //"         (NumberNode 4))))"
+
+      	"(ExecutionOutputLink"
+           "(DefinedSchemaNode \"the answer\")"
+            " (ListLink"
+               " (NumberNode 2)"
+               " (NumberNode 4)))"
+     );
+
+
+    std::cout << "handle " << handle->to_string() << std::endl;
+	Handle atomese_complexity(handle);
+	std::cout << "result " << atomese_complexity << std::endl;
+    //complexity_t expected=1.0;
+
+	//TS_ASSERT_EQUALS(atomese_complexity,expected);
+}
+
