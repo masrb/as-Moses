@@ -20,11 +20,12 @@ public:
 
 	~atomese_complexityUTest();
 
-	void test_atomese_complexity();
-
-
+	void test_atomese_complexity_NN();
+    void test_atomese_complexity_TL();
+    void test_atomese_complexity_TLNN();
+    void test_atomese_complexity_MNN();
+    void test_atomese_complexity_PN();
 };
-
 
 
 atomese_complexityUTest::atomese_complexityUTest()
@@ -34,10 +35,9 @@ atomese_complexityUTest::atomese_complexityUTest()
 
 	as = new AtomSpace();
 	eval = new SchemeEval(as);
-	eval->eval("(add-to-load-path \"" PROJECT_SOURCE_DIR "\")");
+	//eval->eval("(add-to-load-path \"" PROJECT_SOURCE_DIR "\")");
 	eval->eval("(use-modules (opencog exec))");
-	//load_from_path(load_tableUTest_dir + "real_data_result.scm");
-	//load_from_path(load_tableUTest_dir + "boolean_data_result.scm");
+
 }
 
 atomese_complexityUTest::~atomese_complexityUTest()
@@ -49,30 +49,105 @@ atomese_complexityUTest::~atomese_complexityUTest()
 		std::remove(logger().get_filename().c_str());
 }
 
+//test atomese complexity for  NumberNode
+void atomese_complexityUTest::test_atomese_complexity_NN()
+{
+     const Handle &handle = eval->eval_h(
+      	"(ExecutionOutputLink"
+           "(DefinedSchemaNode \"x+y*10\")"
+          " (ListLink"
+             " (NumberNode 2)"
+               " (NumberNode 4)))"
+    );
 
-void atomese_complexityUTest::test_atomese_complexity()
+    std::cout << "handle " << handle->to_string() << std::endl;
+	complexity_t as ;
+	as= atomese_complexity(handle);
+	std::cout << "result = " << as << std::endl;
+    complexity_t expected= 2;
+
+	TS_ASSERT_EQUALS(as,expected);
+}
+
+
+//test atomese complexity for  TimesLink
+void atomese_complexityUTest::test_atomese_complexity_TL()
+{
+     const Handle &handle = eval->eval_h(
+      	  //" (cog-execute!"
+             "(TimesLink"
+                "    (NumberNode 2)"
+                    "(NumberNode 3))"
+     );
+
+    std::cout << "handle " << handle->to_string() << std::endl;
+	complexity_t as ;
+	as= atomese_complexity(handle);
+	std::cout << "result = " << as << std::endl;
+    complexity_t expected=2;
+
+	TS_ASSERT_EQUALS(as,expected);
+}
+
+//test atomese complexity for number node 0 and TimesLink
+void atomese_complexityUTest::test_atomese_complexity_TLNN()
 {
      const Handle &handle = eval->eval_h(
 
-      	"(ExecutionOutputLink"
-           "(DefinedSchemaNode \"the answer\")"
-            " (ListLink"
-               " (NumberNode 2)"
-               " (NumberNode 4)))"
+             "(TimesLink"
+                "    (NumberNode 2)"
+                    "(NumberNode 0))"
      );
-     // "(cog-execute!"
-           	 //  "   (ExecutionOutputLink"
-           	  // "      (DefinedSchemaNode \"x+y*10\")"
-           	   //"      (ListLink"
-           	   //"         (NumberNode 2)"
-           	   //"         (NumberNode 4))))"
-
 
     std::cout << "handle " << handle->to_string() << std::endl;
-	complexity_t atomese_complexity(handle);
-	std::cout << "result " << atomese_complexity << std::endl;
-    //complexity_t expected=1.0;
+	complexity_t as ;
+	as= atomese_complexity(handle);
+	std::cout << "result = " << as << std::endl;
+    complexity_t expected=0;
 
-	//TS_ASSERT_EQUALS(atomese_complexity,expected);
+	TS_ASSERT_EQUALS(as,expected);
 }
 
+
+//test atomese complexity for multiple NumberNodes
+void atomese_complexityUTest::test_atomese_complexity_MNN()
+{
+     const Handle &handle = eval->eval_h(
+
+      	       "(GreaterThanLink"
+                    "(PlusLink"
+                     "  (NumberNode 2)"
+                       "(NumberNode 2))"
+                    "(TimesLink"
+                       "(NumberNode 3)"
+                       "(NumberNode 0.5)))"
+     );
+
+    std::cout << "handle " << handle->to_string() << std::endl;
+	complexity_t as ;
+	as= atomese_complexity(handle);
+	std::cout << "result = " << as << std::endl;
+    complexity_t expected= 4;
+
+	TS_ASSERT_EQUALS(as,expected);
+}
+
+//test atomese complexity for PredicateNode
+void atomese_complexityUTest::test_atomese_complexity_PN()
+{
+     const Handle &handle = eval->eval_h(
+      	      " (EvaluationLink"
+                  "(PredicateNode \"breathe \")"
+                   "( ListLink"
+                     "( ConceptNode \" birds \")"
+                      "(ConceptNode \" air \")))"
+     );
+
+    std::cout << "handle " << handle->to_string() << std::endl;
+	complexity_t as ;
+	as= atomese_complexity(handle);
+	std::cout << "result = " << as << std::endl;
+    complexity_t expected= 1;
+
+	TS_ASSERT_EQUALS(as,expected);
+}

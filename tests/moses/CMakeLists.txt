@@ -66,6 +66,7 @@ TARGET_LINK_LIBRARIES(atomese_basedscorerUTest
 IF (HAVE_GUILE)
 	ADD_CXXTEST(atomese_complexityUTest)
 	TARGET_LINK_LIBRARIES(atomese_complexityUTest
+			moses
 			atomese
 			${ATOMSPACE_LIBRARIES}
 			${GUILE_LIBRARIES}
