@@ -1,0 +1,84 @@
+
+
+
+#include <opencog/atoms/base/Handle.h>
+#include <opencog/atoms/base/Link.h>
+#include <opencog/atoms/base/Node.h>
+#include <opencog/atoms/base/atom_types.h>
+#include <moses/moses/scoring/bscores.h>
+#include <moses/moses/scoring/behave_cscore.h>
+#include <opencog/atoms/core/NumberNode.h>
+#include <moses/comboreduct/combo/combo.h>
+#include <moses/moses/moses/types.h>
+#include <moses/comboreduct/converter/combo_atomese.h>
+
+
+#include <opencog/util/Logger.h>
+
+using namespace std;
+using namespace opencog;
+using namespace moses;
+using namespace combo;
+
+class atomese_basedscorerUTest : public CxxTest::TestSuite
+{
+
+public:
+    atomese_basedscorerUTest();
+    ~atomese_basedscorerUTest();
+    void test_combo_basedscorerUTest();
+    void test_atomese_basedscorerUTest();
+
+
+};
+
+atomese_basedscorerUTest::~atomese_basedscorerUTest()
+
+{
+
+    logger().set_level(Logger::DEBUG);
+    logger().set_print_to_stdout_flag(true);
+
+}
+
+
+atomese_basedscorerUTest::atomese_basedscorerUTest(){
+    // Erase the log file if no assertions failed.
+    if (!CxxTest::TestTracker::tracker().suiteFailed())
+        std::remove(logger().get_filename().c_str());
+}
+
+void atomese_basedscorerUTest:: test_combo_basedscorerUTest() {
+
+
+  // TODO: create a new instance here
+  const instance &inst;
+   composite_score c_bscore=combo_based_scorer ();
+
+  //TODO: create the testcases to compare the expected_atomese_based_scorer
+   composite_score expected_c_bscore=
+    TS_ASSERT_EQUALS(bsc, expected_cbscore);
+
+
+}
+
+void atomese_basedscorerUTest:: test_atomese_basedscorerUTest() {
+
+  // TODO: create a new instance here
+  const instance &inst;
+   composite_score a_bscore= atomese_based_scorer  ();
+
+  //TODO: create the testcases to compare the expected_atomese_based_scorer
+   expected_a_bscore=
+    TS_ASSERT_EQUALS(bsc, expected_abscore);
+
+}
+
+
+
+
+
+
+
+
+}
