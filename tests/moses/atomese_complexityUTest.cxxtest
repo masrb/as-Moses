@@ -20,7 +20,7 @@ public:
 
 	~atomese_complexityUTest();
 
-	void test_atomese_complexity_NN();
+    void test_atomese_complexity_NN();
     void test_atomese_complexity_TL();
     void test_atomese_complexity_TLNN();
     void test_atomese_complexity_MNN();
@@ -125,7 +125,7 @@ void atomese_complexityUTest::test_atomese_complexity_MNN()
 
     std::cout << "handle " << handle->to_string() << std::endl;
 	complexity_t as ;
-	as= atomese_complexity(handle);
+	as = atomese_complexity(handle);
 	std::cout << "result = " << as << std::endl;
     complexity_t expected= 4;
 
